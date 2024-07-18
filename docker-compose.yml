@@ -1,0 +1,71 @@
+version: '2.0'
+
+# will contain all elasticsearch data.
+volumes:
+  data:
+
+services:
+  elasticsearch:
+    container_name: elasticsearch
+    hostname: elasticsearch
+    build:
+      context: elasticsearch/
+      args:
+        ELK_VERSION: ${ELK_VERSION}
+    restart: unless-stopped
+    environment:
+      CONFIG_DIR: ${ELASTIC_DIR}/config
+      ELASTIC_USERNAME: ${ELASTIC_USERNAME}
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
+      ES_JAVA_OPTS: -Xmx5g -Xms5g
+      bootstrap.memory_lock: "true"
+      discovery.type: single-node
+    volumes:
+      - data:${ELASTIC_DIR}
+      - ./elasticsearch/config/elasticsearch.yml:${ELASTIC_DIR}/config/elasticsearch.yml:ro
+      - ./secrets/elasticsearch.keystore:${ELASTIC_DIR}/config/elasticsearch.keystore
+      - ./secrets/certificate_authority/ca/ca.crt:${ELASTIC_DIR}/config/ca.crt
+      - ./secrets/certificates/elasticsearch/elasticsearch.crt:${ELASTIC_DIR}/config/elasticsearch.crt
+      - ./secrets/certificates/elasticsearch/elasticsearch.key:${ELASTIC_DIR}/config/elasticsearch.key
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 200000
+        hard: 200000
+    networks:
+      - elk
+
+  kibana:
+    container_name: kibana
+    hostname: kibana
+    build:
+      context: kibana/
+      args:
+        ELK_VERSION: $ELK_VERSION
+    restart: unless-stopped
+    volumes:
+      - ./kibana/config/kibana.yml:${KIBANA_DIR}/config/kibana.yml:ro
+      - ./secrets/certificate_authority/ca/ca.crt:${KIBANA_DIR}/config/ca.crt
+      - ./secrets/certificates/kibana/kibana.crt:${KIBANA_DIR}/config/kibana.crt
+      - ./secrets/certificates/kibana/kibana.key:${KIBANA_DIR}/config/kibana.key
+    environment:
+      CONFIG_DIR: ${KIBANA_DIR}/config
+      ELASTIC_USERNAME: ${ELASTIC_USERNAME}
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
+      ENCRYPTION_KEY: ${XPACK_ENCRYPTION_KEY}
+      KIBANA_URL: ${KIBANA_URL}
+    ports:
+      - "5601:5601"
+    networks:
+      - elk
+    depends_on: 
+      - elasticsearch
+
+networks:
+  elk:
+    driver: bridge
