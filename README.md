@@ -1,3 +1,5 @@
+![ACROSS](/docs/logo_across.jpg)
+
 # Data Ingestion and Search (DIS)
 
 ![Architecture](/docs/DIS.jpg)
@@ -62,3 +64,5 @@ and expect the following response:
   "tagline" : "You Know, for Search"
 }
 ```
+
+![K3Y Ltd](/docs/logo_k3y.png)
