@@ -1,12 +1,10 @@
+![ACROSS](/docs/logo_across.jpg)
+
 # Data Ingestion and Search (DIS)
 
 This repository holds the required documentation for running the Data Ingestion (DIS) and Search which heavily relies on Elasticsearch for storing data in a search Engine. Additionally, a visualization dashboard utilizing Kibana is also provided. This service has been originaly developed and deployed during the ACROSS project. It is also deployed with TLS certificates to ensure E2E encryption.
 
-### Editor
-
-- **Creator**: Evangelos Syrmos
-- **Date**: July 2024
-- **Related Project**: ACROSS
+![Architecture](/docs/DIS.jpg)
 
 ## Prerequisite
 In order to run and the deploy DIS the following must be met:
@@ -66,3 +64,5 @@ and expect the following response:
   "tagline" : "You Know, for Search"
 }
 ```
+
+![K3Y Ltd](/docs/logo_k3y.png)
